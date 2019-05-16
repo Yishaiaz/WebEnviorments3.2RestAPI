@@ -1,0 +1,19 @@
+{
+  "name": "webenviorment3restapi",
+  "version": "1.0.0",
+  "description": "web enviorments 3.2 task",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yishaiaz/WebEnviorments3.2RestAPI.git"
+  },
+  "author": "Yishaia Zabary",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Yishaiaz/WebEnviorments3.2RestAPI/issues"
+  },
+  "homepage": "https://github.com/Yishaiaz/WebEnviorments3.2RestAPI#readme"
+}
