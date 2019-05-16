@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/Yishaiaz/WebEnviorments3.2RestAPI/issues"
   },
-  "homepage": "https://github.com/Yishaiaz/WebEnviorments3.2RestAPI#readme"
+  "homepage": "https://github.com/Yishaiaz/WebEnviorments3.2RestAPI#readme",
+  "dependencies": {
+    "async": "^2.6.2",
+    "tedious": "^5.0.3"
+  }
 }
