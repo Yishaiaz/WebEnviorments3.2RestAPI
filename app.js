@@ -1,5 +1,7 @@
 const express = require("express");
+const azureControler = require("dbControllers/azureDb");
 const app = express();
+
 
 app.get("/", (req, res) => {
     res.status(200).json({
