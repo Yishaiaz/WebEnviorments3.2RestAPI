@@ -1,8 +1,8 @@
-var Connection = require('tedious').Connection;
-var Request = require('tedious').Request;
 
-export function queryDatabase(sqlQuery)
+module.exports.queryDatabase= function (sqlQuery)
 {
+    var Connection = require('tedious').Connection;
+    var Request = require('tedious').Request;
     // Create connection to database
     var config =
         {
@@ -53,4 +53,4 @@ export function queryDatabase(sqlQuery)
         });
     });
     connection.execSql(request);
-}
+};
