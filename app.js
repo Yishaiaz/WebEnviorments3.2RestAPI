@@ -4,6 +4,7 @@ const app = express();
 
 // ENABLES US TO PARSE JSON'S DIRECTLY FROM REQ/RES
 app.use(express.json() );
+
 // REST API routes:
 
 // 1: LOGIN todo: complete database check and token handling.
