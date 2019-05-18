@@ -1,58 +1,53 @@
+var Connection = require('tedious').Connection;
 
-module.exports.queryDatabase= function (sqlQuery)
-{
-    function queryDataBase(query){
-        console.log('Reading rows from the Table...');
 
-        // Read all rows from table
-        var request = new Request(query,
-            function(err, rowCount, rows)
+var config =
+    {
+        authentication: {
+            options: {
+                userName: 'tamir', // update me
+                password: 'Db123456' // update me
+            },
+            type: 'default'
+        },
+        server: 'appwebserver2.database.windows.net', // update me
+        options:
             {
-                console.log(rowCount + ' row(s) returned');
-                process.exit();
+                database: 'Assignment3db', //update me
+                encrypt: true
             }
-        );
+    };
 
+
+
+module.exports.runQuery = function(sqlQuery, callback){
+    var connection = new Connection(config);
+    var newdata = [];
+    var dataset = [];
+    connection.on('connect', function(err) {
+        var Request = require('tedious').Request;
+        var request = new Request(sqlQuery, function (err, rowCount) {
+            if (err) {
+                callback(err);
+            } else {
+                if (rowCount < 1) {
+                    callback(null, false);
+                } else {
+                    callback(null, newdata);
+                }
+            }
+        });
         request.on('row', function(columns) {
+            var dataset=[];
             columns.forEach(function(column) {
-                console.log("%s\t%s", column.metadata.colName, column.value);
+                dataset.push({
+                    col: column.metadata.colName,
+                    val: column.value
+                });
             });
+            newdata.push(dataset);
         });
         connection.execSql(request);
-    }
-    var Connection = require('tedious').Connection;
-    var Request = require('tedious').Request;
-    // Create connection to database
-    var config =
-        {
-            authentication: {
-                options: {
-                    userName: 'tamir', // update me
-                    password: 'Db123456' // update me
-                },
-                type: 'default'
-            },
-            server: 'appwebserver2.database.windows.net', // update me
-            options:
-                {
-                    database: 'TutorialDb', //update me
-                    encrypt: true
-                }
-        };
-    var connection = new Connection(config);
-    // console.log(connection);
-// Attempt to connect and execute queries if connection goes through
-    connection.on('connect', function(err)
-        {
-            console.log("hello");
-            if (err)
-            {
-                console.log(err+"hey")
-            }
-            else
-            {
-                queryDataBase(sqlQuery);
-            }
-        }
-    );
+    });
+
 };

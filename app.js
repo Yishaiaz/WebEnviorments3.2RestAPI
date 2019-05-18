@@ -1,5 +1,6 @@
 const express = require("express");
 const azureControler = require("./dbControllers/azureDb");
+const poiModule = require("./Modules/pointOfInterest");
 const app = express();
 
 // ENABLES US TO PARSE JSON'S DIRECTLY FROM REQ/RES
@@ -120,53 +121,25 @@ app.get("/poi/get2popularpoi", (req, res)=>{
 // 7: GET POI DETAILS todo: connect to the db
 app.get("/poi/getpoidetails", (req, res)=>{
     var poiName = req.body['POIName'];
-    console.log(poiName);
-    res.status(200).json({
-        'poi_data': {
-            'id':'123',
-            'title': 'Haifa',
-            'image_url': 'https://www.thenational.ae/image/policy:1.763876:1535285300/Haifa.jpg?f=16x9&w=1200&$p$f$w=83e38b4',
-            'description': 'night shot of Haifa bay.<br>wonderful'
-        }
-    });
+    poiName = "'"+poiName+"'";
+    var result = poiModule.getPOIDetails(poiName)
+        .then((data)=>
+            res.status(200).send(data))
+        .catch((err)=>{
+            console.log(err);
+            res.status(400).send("Not Found");
+        });
 });
 
 // 8: GET ALL POI todo: connect to db
 app.get("/poi/getallpoi", (req, res)=>{
-    res.status(200).json({
-        'poi1':{
-            'poi_data': {
-                'id':'123',
-                'title': 'Haifa',
-                'image_url': 'https://www.thenational.ae/image/policy:1.763876:1535285300/Haifa.jpg?f=16x9&w=1200&$p$f$w=83e38b4',
-                'description': 'night shot of Haifa bay.<br>wonderful'
-            }
-        },
-        'poi2':{
-            'poi_data': {
-                'id':'123',
-                'title': 'Haifa',
-                'image_url': 'https://www.thenational.ae/image/policy:1.763876:1535285300/Haifa.jpg?f=16x9&w=1200&$p$f$w=83e38b4',
-                'description': 'night shot of Haifa bay.<br>great'
-            }
-        },
-        'poi3':{
-            'poi_data': {
-                'id':'123',
-                'title': 'Haifa',
-                'image_url': 'https://www.thenational.ae/image/policy:1.763876:1535285300/Haifa.jpg?f=16x9&w=1200&$p$f$w=83e38b4',
-                'description': 'night shot of Haifa bay.<br>wonderful'
-            }
-        },
-        'poi4':{
-            'poi_data': {
-                'id':'123',
-                'title': 'Haifa',
-                'image_url': 'https://www.thenational.ae/image/policy:1.763876:1535285300/Haifa.jpg?f=16x9&w=1200&$p$f$w=83e38b4',
-                'description': 'night shot of Haifa bay.<br>great'
-            }
-        }
-    });
+    var result = poiModule.getAll()
+        .then((data)=>
+        res.status(200).send(data))
+        .catch((err)=>{
+            console.log(err);
+            res.status(400).send("Not Found");
+        });
 });
 
 // 9: GET ALL POI BY CATEGORY todo: connect to db
