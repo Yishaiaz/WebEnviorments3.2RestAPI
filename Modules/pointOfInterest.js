@@ -42,3 +42,18 @@ module.exports.getPOIDetails =  function(POIName){
         });
     });
 };
+module.exports.getRandomPOI =  function(minimalRank){
+    return new Promise((resolve, reject)=>{
+        azureControler.runQuery("SELECT * FROM POI WHERE rank>="+minimalRank, function(err, rows) {
+            if (err) {
+                console.log("error"+err);
+                reject('error'+err);
+            } else if (rows) {
+                let randomIndex=Math.floor(Math.random() * rows.length);
+                resolve(rows[randomIndex]);
+            } else {
+                // return null;
+            }
+        });
+    });
+};

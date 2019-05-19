@@ -1,6 +1,9 @@
 const express = require("express");
 const azureControler = require("./dbControllers/azureDb");
 const poiModule = require("./Modules/pointOfInterest");
+const questionModule = require("./Modules/Question");
+const countriesModule = require("./Modules/Countries");
+const userModule = require("./Modules/user");
 const app = express();
 
 // ENABLES US TO PARSE JSON'S DIRECTLY FROM REQ/RES
@@ -8,44 +11,31 @@ app.use(express.json() );
 
 // REST API routes:
 
-// 1: LOGIN todo: complete database check and token handling.
+// 1: LOGIN todo: return token
 app.post("/users/login", (req, res)=>{
-    var username = req.body["username"];
-    var password = req.body["Password"];
+    var username = "'"+req.body["username"]+"'";
+    var password = "'"+req.body["password"]+"'";
 
-    res.status(200).json({
-        "username":username,
-        "password": password
-    });
+    var result = userModule.userLogin(username,password)
+        .then((data)=>
+            res.status(200).send(data))
+        .catch((err)=>{
+            console.log(err);
+            res.status(400).send("Not Found");
+        });
 });
 
-// 2: GET RANDOM POI todo: connect to db
-app.get("/poi/getrandomPOI", (req, res)=>{
-    var minimalRank = req.body["minimalRank"];
-    console.log(minimalRank);
-    res.status(200).json({
-        'poi1':{
-            'poi_data': {
-                'id':'123',
-                'title': 'Haifa',
-                'image_url': 'https://www.thenational.ae/image/policy:1.763876:1535285300/Haifa.jpg?f=16x9&w=1200&$p$f$w=83e38b4'
-            }
-        },
-        'poi2':{
-            'poi_data': {
-                'id':'123',
-                'title': 'Haifa',
-                'image_url': 'https://www.thenational.ae/image/policy:1.763876:1535285300/Haifa.jpg?f=16x9&w=1200&$p$f$w=83e38b4'
-            }
-        },
-        'poi3':{
-            'poi_data': {
-                'id':'123',
-                'title': 'Haifa',
-                'image_url': 'https://www.thenational.ae/image/policy:1.763876:1535285300/Haifa.jpg?f=16x9&w=1200&$p$f$w=83e38b4'
-            }
-        }
-    });
+// 2: GET RANDOM POI
+app.get('/poi/getrandomPOI/:minimalRank', (req, res)=>{
+    var minimalRank = req.params.minimalRank;
+    //var minimalRank = req.params.minimalRank;
+    var result = poiModule.getRandomPOI(minimalRank)
+        .then((data)=>
+            res.status(200).send(data))
+        .catch((err)=>{
+            console.log(err);
+            res.status(400).send("Not Found");
+        });
 });
 
 // 3: RESTORE PASSWORD todo: validate with db and retrieve password.
@@ -56,9 +46,13 @@ app.post("/users/restorePassword", (req, res)=>{
         'answer': req.body['answer']
     };
     console.log(data);
-    res.status(200).json({
-        'password': '123'
-    });
+    userModule.restorePassword(req.body['username'],req.body['question'],req.body['answer'])
+        .then((data)=>
+            res.status(200).send(data))
+        .catch((err)=>{
+            console.log(err);
+            res.status(400).send("Not Found");
+        });
 });
 
 // 4: INSERT QUESTION todo:connect to db
@@ -74,24 +68,28 @@ app.post("/users/insertQuestionToUser", (req,res)=>{
     });
 });
 
-// 5: ADD USER todo: connect to db
+// 5: ADD USER todo: handle the categories and todo: return token .
 app.post("/users/addUser", (req, res)=>{
-    var newUserData = {
-        username: req.body['userName'],
-        firstName: req.body['firstName'],
-        lastName: req.body['lastName'],
-        city: req.body['city'],
-        country: req.body['country'],
-        email: req.body['Email'],
-        firstCategoryName : req.body['categoryName1'],
-        secondCategoryName : req.body['categoryName2'],
-        securityQuestion: req.body['Q'],
-        securityAns: req.body['A']
-    };
-    console.log(newUserData);
-    res.status(200).json({
-        token: "token"
-    });
+    var username= req.body['userName'];
+    var password=req.body['password'];
+    var firstName= req.body['firstName'];
+    var lastName= req.body['lastName'];
+    var city= req.body['city'];
+    var country= req.body['country'];
+    var email= req.body['Email'];
+    var securityQuestion1= req.body['Q1'];
+    var securityAns1= req.body['A1'];
+    var securityQuestion2= req.body['Q2'];
+    var securityAns2= req.body['A2'];
+    var categories=req.body['categories'];
+
+    var result = userModule.addUser(username,password,firstName,lastName,city,country,email,securityQuestion1,securityAns1, securityQuestion2,securityAns2)
+        .then((data)=>
+            res.status(200).send(data))
+        .catch((err)=>{
+            console.log(err);
+            res.status(400).send("Not Found");
+        });
 });
 
 // 6: GET 2 POPULAR POI BY USER ID ((ID)=>INTERESTS) todo: connect to db
@@ -118,7 +116,7 @@ app.get("/poi/get2popularpoi", (req, res)=>{
     });
 });
 
-// 7: GET POI DETAILS todo: connect to the db
+// 7: GET POI DETAILS
 app.get("/poi/getpoidetails", (req, res)=>{
     var poiName = req.body['POIName'];
     poiName = "'"+poiName+"'";
@@ -131,7 +129,7 @@ app.get("/poi/getpoidetails", (req, res)=>{
         });
 });
 
-// 8: GET ALL POI todo: connect to db
+// 8: GET ALL POI
 app.get("/poi/getallpoi", (req, res)=>{
     var result = poiModule.getAll()
         .then((data)=>
@@ -223,18 +221,15 @@ app.get("/users/getuserauthquestion", (req, res)=>{
     });
 });
 
-// 15: GET POSSIBLE COUNTRIES FOR REGISTRATION todo: connect ot db or global variable
+// 15: GET POSSIBLE COUNTRIES FOR REGISTRATION
 app.get("/getpossiblecountriesforregistration", (req, res)=>{
-    var ansDict={};
-    for(var i=0; i<=2; i++){
-        ansDict[i] = {
-            countryId: 'IL',
-            countryName:"Israel"
-        };
-    }
-    res.status(200).json({
-        countries: ansDict
-    });
+    var result = countriesModule.getAll()
+        .then((data)=>
+            res.status(200).send(data))
+        .catch((err)=>{
+            console.log(err);
+            res.status(400).send("Not Found");
+        });
 });
 
 // 16: GET SEARCH RESULTS BY POI NAME
@@ -298,7 +293,29 @@ app.post("/poi/addpoireview", (req, res)=>{
     res.status(200).send(poiName+","+rating+","+content);
 });
 
+//***********************    added functions   *****************************************************************
 
+// 22: GET ALL Questions
+app.get("/getallquestions", (req, res)=>{
+    var result = questionModule.getAll()
+        .then((data)=>
+            res.status(200).send(data))
+        .catch((err)=>{
+            console.log(err);
+            res.status(400).send("Not Found");
+        });
+});
+
+// 22: GET ALL Countries
+app.get("/getallcountries", (req, res)=>{
+    var result = countriesModule.getAll()
+        .then((data)=>
+            res.status(200).send(data))
+        .catch((err)=>{
+            console.log(err);
+            res.status(400).send("Not Found");
+        });
+});
 
 
 const port = process.env.PORT || 3000;
