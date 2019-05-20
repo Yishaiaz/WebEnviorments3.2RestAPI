@@ -284,8 +284,9 @@ app.post("/poi/addpoireview", (req, res)=>{
     var poiName = req.body['POIName'];
     var rating = req.body['rating'];
     var content = req.body['content'];
+    var username = req.body['username'];
 
-    poiModule.addReview(poiName,content,rating)
+    poiModule.addReview(poiName,content,rating,username)
         .then((data)=>
             res.status(200).send(data))
         .catch((err)=>{

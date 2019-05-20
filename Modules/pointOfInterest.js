@@ -84,9 +84,9 @@ module.exports.searchPOI =  function(poiName){
     });
 };
 
-module.exports.addReview =  function(poiName,content,rating){
+module.exports.addReview =  function(poiName,content,rating,username){
     return new Promise((resolve, reject)=>{
-        let query="INSERT INTO Reviews VALUES ("+rating+`,'${content}','${poiName}')`;
+        let query=`INSERT INTO Reviews VALUES ('${username}',`+rating+`,'${content}','${poiName}',GETDATE())`;
         console.log(query);
         azureControler.runQuery(query, function(err, rows) {
             if (err) {
