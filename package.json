@@ -17,8 +17,9 @@
   },
   "homepage": "https://github.com/Yishaiaz/WebEnviorments3.2RestAPI#readme",
   "dependencies": {
-    "express": "^4.17.0",
     "async": "^2.6.2",
+    "express": "^4.17.0",
+    "jsonwebtoken": "^8.5.1",
     "tedious": "^6.1.1"
   }
 }
