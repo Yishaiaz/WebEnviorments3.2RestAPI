@@ -48,14 +48,23 @@ module.exports.getPOIDetails =  function(POIName){
 };
 //todo: return 3 random poi now returns only 1.
 module.exports.getRandomPOI =  function(minimalRank){
+    let resultsArray=[];
     return new Promise((resolve, reject)=>{
         azureControler.runQuery("SELECT * FROM POI WHERE rank>="+minimalRank, function(err, rows) {
             if (err) {
                 console.log("error"+err);
                 reject('error'+err);
             } else if (rows) {
-                let randomIndex=Math.floor(Math.random() * rows.length);
-                resolve(rows[randomIndex]);
+                for (let i = 0; i < 3; i++) {
+                    let results={};
+                    let randomIndex=Math.floor(Math.random() * rows.length);
+                    rows[randomIndex].forEach(function(row){
+                        results[row['col']]=row.val;
+                    });
+                    resultsArray.push(results);
+                    rows.splice(randomIndex,1);
+                }
+                resolve(resultsArray);
             } else {
                 reject("Not Found");
             }
