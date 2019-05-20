@@ -23,7 +23,7 @@ module.exports.getAll =  function(){
               }
               resolve(resultsArray);
           } else {
-              // return null;
+              reject("Not Found");
           }
       });
   });
@@ -41,7 +41,7 @@ module.exports.getPOIDetails =  function(POIName){
                 });
                 resolve(results);
             } else {
-                // return null;
+                reject("Not Found");
             }
         });
     });
@@ -57,7 +57,7 @@ module.exports.getRandomPOI =  function(minimalRank){
                 let randomIndex=Math.floor(Math.random() * rows.length);
                 resolve(rows[randomIndex]);
             } else {
-                // return null;
+                reject("Not Found");
             }
         });
     });
@@ -78,7 +78,7 @@ module.exports.searchPOI =  function(poiName){
                 });
                 resolve(results);
             } else {
-                // return null;
+                reject("Not Found");
             }
         });
     });
@@ -95,7 +95,7 @@ module.exports.addReview =  function(poiName,content,rating,username){
             } else if (rows) {
                 resolve('Review added succeed');
             } else {
-                // return null;
+                reject("Not Found");
             }
         });
     });
@@ -120,7 +120,7 @@ module.exports.getAllPOIReviews =  function(POIName){
                 }
                 resolve(resultsArray);
             } else {
-                // return null;
+                reject("Not Found");
             }
         });
     });
@@ -147,7 +147,7 @@ module.exports.getPOIByCategory =  function (categoryName) {
                 console.log("resolving");
                 resolve(resultsArray);
             } else {
-                reject(null);
+                reject("Not Found");
             }
         });
     });
