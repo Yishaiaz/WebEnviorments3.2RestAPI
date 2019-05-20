@@ -7,10 +7,6 @@ module.exports.userLogin =  function(username, password){
                 console.log("error"+err);
                 reject('error'+err);
             } else if (rows) {
-                let results={};
-                rows[0].forEach(function(row){
-                    results[row['col']]=row.val;
-                });
                 let userName=rows[0][0]['val'];
                 const token=jwt.sign({username: userName},'myPrivateKey');
                 resolve(token);
@@ -31,7 +27,8 @@ module.exports.addUser= function (username, password,firstname,lastname,city,cou
                 console.log("error"+err);
                 reject('error'+err);
             } else if (rows) {
-                resolve("user added succeed");
+                const token=jwt.sign({username: username},'myPrivateKey');
+                resolve(token);
             } else {
                 resolve("add user failed");
                 console.log("add fail");
