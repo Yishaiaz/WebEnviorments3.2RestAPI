@@ -1,3 +1,4 @@
+
 const azureControler = require("../dbControllers/azureDb");
 const jwt= require('jsonwebtoken');
 module.exports.userLogin =  function(username, password){
@@ -41,6 +42,23 @@ module.exports.restorePassword=function (username, question, answer) {
     return new Promise((resolve, reject)=>{
         azureControler.runQuery(`SELECT password FROM Users where username= '${username}' 
         AND ((Question1='${question}' AND Answer1='${answer}') OR (Question2='${question}' AND Answer2='${answer}'))`, function(err, rows) {
+            if (err) {
+                console.log("error"+err);
+                reject('error'+err);
+            } else if (rows) {
+                resolve(rows[0][0].val);
+            } else {
+                resolve(null);
+                console.log("wrong username or Q&A");
+            }
+        });
+    });
+};
+
+module.exports.addFavouritePOIToUser = function(username, newFavouritePoi) {
+    return new Promise((resolve, reject)=>{
+        let query=`INSERT INTO UsersPOI VALUES ('${username}','${newFavouritePoi}',GETDATE())`;
+        azureControler.runQuery(query, function(err, rows) {
             if (err) {
                 console.log("error"+err);
                 reject('error'+err);

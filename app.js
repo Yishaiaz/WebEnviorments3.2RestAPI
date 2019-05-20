@@ -243,13 +243,12 @@ app.get("/poi/getsearchresultsbypoiname/:name", (req, res)=>{
 });
 
 // 17: SET USER FAVOURITE POI todo: connect to db
-// todo: change the documentation to receive
+// todo: change the documentation to receive {username, newfavouritepoiname}
 app.put("/users/setuserfavouritepoi", (req, res)=>{
-    var newFavouritePoi= req.body['POI'];
+    var newFavouritePoi= req.body['newfavouritepoiname'];
     var username = req.body['username'];
-    var todayDate = Date.now();
     console.log(newFavouritePoi);
-    userModule.addFavouritePOIToUser(newFavouritePoi)
+    userModule.addFavouritePOIToUser(username, newFavouritePoi)
         .then((data)=>
             res.status(200).send(data))
         .catch((err)=>{
