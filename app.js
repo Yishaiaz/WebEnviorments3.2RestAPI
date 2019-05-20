@@ -68,7 +68,7 @@ app.post("/users/restorePassword", (req, res)=>{
 //     });
 // });
 
-// 5: ADD USER todo: handle the categories and todo: return token .
+// 5: ADD USER
 app.post("/users/addUser", (req, res)=>{
     var username= req.body['userName'];
     var password=req.body['password'];
@@ -83,14 +83,18 @@ app.post("/users/addUser", (req, res)=>{
     var securityAns2= req.body['A2'];
     var categories=req.body['categories'];
 
-    var result = userModule.addUser(username,password,firstName,lastName,city,country,email,securityQuestion1,securityAns1, securityQuestion2,securityAns2)
-        .then((token)=>userModule.addUserCategories(username,categories,token))
-        .then((token)=>
-            res.status(200).send(token))
-        .catch((err)=>{
-            console.log(err);
-            res.status(400).send("Not Found");
-        });
+    if(categories.length<2)
+        res.status(400).send("register failed. you need at least 2 categories");
+    else{
+        userModule.addUser(username,password,firstName,lastName,city,country,email,securityQuestion1,securityAns1, securityQuestion2,securityAns2)
+            .then((token)=>userModule.addUserCategories(username,categories,token))
+            .then((token)=>
+                res.status(200).send(token))
+            .catch((err)=>{
+                console.log(err);
+                res.status(400).send("Not Found");
+            });
+    }
 });
 
 // 6: GET 2 POPULAR POI BY USER ID ((ID)=>INTERESTS) todo: connect to db
