@@ -128,8 +128,35 @@ module.exports.getAllPOIReviews =  function(POIName){
 module.exports.getPOIByCategory =  function (categoryName) {
     let resultsArray = [];
     console.log("in poi/getpoibycategory");
-    return poiNamesPromise = new Promise((resolve, reject) =>{
+    return new Promise((resolve, reject) =>{
         let query=`SELECT POIName FROM POICategories where categoryName = '${categoryName}'`;
+        console.log(query);
+        azureControler.runQuery(query, function(err, rows) {
+            if (err) {
+                console.log("error"+err);
+                reject('error'+err);
+            } else if (rows) {
+                console.log("adding rows");
+                for (let i = 0; i < rows.length; i++) {
+                    let results={};
+                    rows[0].forEach(function(row){
+                        results[row['col']]=row.val;
+                    });
+                    resultsArray.push(results);
+                }
+                console.log("resolving");
+                resolve(resultsArray);
+            } else {
+                reject("Not Found");
+            }
+        });
+    });
+};
+
+module.exports.getRandomImgUrls= function(numOfImagesRequested){
+    let resultsArray = [];
+    return new Promise((resolve, reject) =>{
+        let query=`SELECT imgUrl FROM POI`;
         console.log(query);
         azureControler.runQuery(query, function(err, rows) {
             if (err) {
