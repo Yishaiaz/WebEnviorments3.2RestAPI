@@ -174,18 +174,28 @@ app.get("/poi/getuserlast2savedpoi", (req, res)=>{
 });
 
 // 11: GET N [NUMBER] RANDOM IMAGES todo: connect to db
-app.get("/poi/getnrandomimages", (req, res)=>{
-    var numberOfRandomImagesRequested = req.body['numOfImages'];
+app.get("/poi/getnrandomimages/:numOfImages", (req, res)=>{
+    var numberOfRandomImagesRequested = parseInt(req.params.numOfImages);
     console.log(numberOfRandomImagesRequested);
-    var ansDict={};
-    for(var i=0; i<=parseInt(numberOfRandomImagesRequested); i++){
-        ansDict[i] = {
-            img_url:"https://www.templers-haifa.co.il/wp-content/uploads/2014/12/templers-haifa-25-12-2014-ben-gurion.jpg"
-        };
-    }
-    res.status(200).json({
-        imagesJson: ansDict
-    });
+    var results = poiModule.getRandomImgUrls(numberOfRandomImagesRequested)
+        .then((data)=>{
+            console.log(data);
+            res.status(200).send(data);
+
+        })
+        .catch((err)=>{
+            console.log(err);
+            res.status(404).send("Not Found");
+        });
+    // var ansDict={};
+    // for(var i=0; i<=parseInt(numberOfRandomImagesRequested); i++){
+    //     ansDict[i] = {
+    //         img_url:"https://www.templers-haifa.co.il/wp-content/uploads/2014/12/templers-haifa-25-12-2014-ben-gurion.jpg"
+    //     };
+    // }
+    // res.status(200).json({
+    //     imagesJson: ansDict
+    // });
 });
 
 // 12: UPDATE USER CATEGORIES todo: connect to db
@@ -244,9 +254,9 @@ app.get("/poi/getsearchresultsbypoiname/:name", (req, res)=>{
 });
 
 // 17: SET USER FAVOURITE POI todo: connect to db
-// todo: change the documentation to receive {username, newfavouritepoiname}
+// todo: change documentation for
 app.put("/users/setuserfavouritepoi", (req, res)=>{
-    var newFavouritePoi= req.body['newfavouritepoiname'];
+    var newFavouritePoi= req.body['poi'];
     var username = req.body['username'];
     console.log(newFavouritePoi);
     userModule.addFavouritePOIToUser(username, newFavouritePoi)
@@ -274,11 +284,18 @@ app.get("/users/getuserfavouritepoi", (req, res)=>{
     res.status(200).send(ansDict);
 });
 
-// 19: ADD USER FAVOURITE POI todo: connect to db
+// 19: ADD USER FAVOURITE POI
 app.put("/users/adduserfavouritepoi", (req, res)=>{
-    var poiName = req.body;
-    console.log(poiName);
-    res.status(200).send('worked');
+    var newFavouritePoi= req.body['newfavouritepoiname'];
+    var username = req.body['username'];
+    console.log(newFavouritePoi);
+    userModule.addFavouritePOIToUser(username, newFavouritePoi)
+        .then((data)=>
+            res.status(200).send(data))
+        .catch((err)=>{
+            console.log(err);
+            res.status(400).send("Not Found");
+        });
 });
 
 // 20: REMOVE USER FAVOURITE POI todo: connect to db
