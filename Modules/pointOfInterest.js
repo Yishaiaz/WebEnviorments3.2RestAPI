@@ -127,7 +127,7 @@ module.exports.getAllPOIReviews =  function(POIName){
 };
 module.exports.getPOIByCategory =  function (categoryName) {
     let resultsArray = [];
-    console("in poi/getpoibycategory");
+    console.log("in poi/getpoibycategory");
     return poiNamesPromise = new Promise((resolve, reject) =>{
         let query=`SELECT POIName FROM POICategories where categoryName = '${categoryName}'`;
         console.log(query);
