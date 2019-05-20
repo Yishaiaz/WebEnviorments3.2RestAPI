@@ -84,6 +84,7 @@ app.post("/users/addUser", (req, res)=>{
     var categories=req.body['categories'];
 
     var result = userModule.addUser(username,password,firstName,lastName,city,country,email,securityQuestion1,securityAns1, securityQuestion2,securityAns2)
+        .then((user)=>userModule.addUserCategories(user))
         .then((data)=>
             res.status(200).send(data))
         .catch((err)=>{
@@ -140,7 +141,7 @@ app.get("/poi/getallpoi", (req, res)=>{
         });
 });
 
-// 9: GET ALL POI BY CATEGORY todo: connect to db
+// 9: GET ALL POI BY CATEGORY
 app.get("/poi/getallpoibycategory/:categoryName", (req, res)=>{
     var categoryName = req.params.categoryName;
     console.log(categoryName);
