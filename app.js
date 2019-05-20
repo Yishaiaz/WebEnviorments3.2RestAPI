@@ -11,7 +11,7 @@ app.use(express.json() );
 
 // REST API routes:
 
-// 1: LOGIN todo: return token
+// 1: LOGIN
 app.post("/users/login", (req, res)=>{
     var username = "'"+req.body["username"]+"'";
     var password = "'"+req.body["password"]+"'";
@@ -55,18 +55,18 @@ app.post("/users/restorePassword", (req, res)=>{
         });
 });
 
-// 4: INSERT QUESTION todo:connect to db
-app.post("/users/insertQuestionToUser", (req,res)=>{
-    var data={
-        'username': req.body['username'],
-        'question':req.body['question'],
-        'answer': req.body['answer']
-    };
-    console.log(data);
-    res.status(200).json({
-        'success':1
-    });
-});
+// // 4: INSERT QUESTION todo:connect to db
+// app.post("/users/insertQuestionToUser", (req,res)=>{
+//     var data={
+//         'username': req.body['username'],
+//         'question':req.body['question'],
+//         'answer': req.body['answer']
+//     };
+//     console.log(data);
+//     res.status(200).json({
+//         'success':1
+//     });
+// });
 
 // 5: ADD USER todo: handle the categories and todo: return token .
 app.post("/users/addUser", (req, res)=>{
@@ -141,19 +141,19 @@ app.get("/poi/getallpoi", (req, res)=>{
 });
 
 // 9: GET ALL POI BY CATEGORY todo: connect to db
-app.get("/poi/getallpoibycategory", (req, res)=>{
-    var categoryName = req.body['categoryName'];
+app.get("/poi/getallpoibycategory/:categoryName", (req, res)=>{
+    var categoryName = req.params.categoryName;
     console.log(categoryName);
-    res.status(200).json({
-        'poi1':{
-            'poi_data': {
-                'id':'123',
-                'title': 'Haifa',
-                'image_url': 'https://www.thenational.ae/image/policy:1.763876:1535285300/Haifa.jpg?f=16x9&w=1200&$p$f$w=83e38b4',
-                'description': 'night shot of Haifa bay.<br>great'
-            }
-        }
-    });
+    var results = poiModule.getPOIByCategory(categoryName)
+        .then((data)=>{
+            console.log(data);
+            res.status(200).send(data);
+
+        })
+        .catch((err)=>{
+            console.log(err);
+            res.status(404).send("Not Found");
+        });
 });
 
 // 10: GET USER LAST 2 SAVED POI todo: connect to db
