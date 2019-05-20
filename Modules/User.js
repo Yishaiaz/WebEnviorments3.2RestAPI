@@ -20,7 +20,7 @@ module.exports.userLogin =  function(username, password){
     });
 };
 
-module.exports.addUser= function (username, password,firstname,lastname,city,country,email,question1,answer1,question2,answer2) {
+module.exports.addUser= async function (username, password,firstname,lastname,city,country,email,question1,answer1,question2,answer2) {
     return new Promise((resolve, reject)=>{
         azureControler.runQuery(`INSERT INTO Users VALUES ('${username}','${password}','${firstname}','${lastname}'
         ,'${city}','${country}','${email}','${question1}','${answer1}','${question2}','${answer2}')`, function(err, rows) {
@@ -48,7 +48,7 @@ module.exports.restorePassword=function (username, question, answer) {
             } else if (rows) {
                 resolve(rows[0][0].val);
             } else {
-                resolve(null);
+                resolve("Not Found");
                 console.log("wrong username or Q&A");
             }
         });
@@ -65,7 +65,32 @@ module.exports.addFavouritePOIToUser = function(username, newFavouritePoi) {
             } else if (rows) {
                 resolve(rows[0][0].val);
             } else {
-                resolve(null);
+                resolve("Not Found");
+                console.log("wrong username or Q&A");
+            }
+        });
+    });
+};
+
+
+module.exports.addUserCategories = function(username, categories,token) {
+    return new Promise((resolve, reject)=>{
+        // let query=`INSERT INTO UsersCategories VALUES ('${username}','${newFavouritePoi}',GETDATE())`;
+        let query="INSERT INTO UsersCategories VALUES ";
+        for (let i = 0; i < categories.length-1; i++) {
+            let value=`('${username}','${categories[i]}'),`;
+            query+=value;
+        }
+        let value=`('${username}','${categories[categories.length-1]}');`;
+        query+=value;
+        azureControler.runQuery(query, function(err, rows) {
+            if (err) {
+                console.log("error"+err);
+                reject('error'+err);
+            } else if (rows) {
+                resolve(token);
+            } else {
+                resolve("Not Found");
                 console.log("wrong username or Q&A");
             }
         });
