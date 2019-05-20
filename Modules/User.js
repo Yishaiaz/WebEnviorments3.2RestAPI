@@ -34,7 +34,7 @@ module.exports.addUser= function (username, password,firstname,lastname,city,cou
     });
 };
 
-export function restorePassword(username, question, answer) {
+module.exports.restorePassword=function (username, question, answer) {
     return new Promise((resolve, reject)=>{
         azureControler.runQuery(`SELECT password FROM Users where username= '${username}' 
         AND ((Question1='${question}' AND Answer1='${answer}') OR (Question2='${question}' AND Answer2='${answer}'))`, function(err, rows) {
@@ -42,12 +42,11 @@ export function restorePassword(username, question, answer) {
                 console.log("error"+err);
                 reject('error'+err);
             } else if (rows) {
-                resolve("login succeed");
+                resolve(rows[0][0].val);
             } else {
-                resolve("login failed");
-                console.log("wrong username or password");
-
+                resolve(null);
+                console.log("wrong username or Q&A");
             }
         });
     });
-}
+};

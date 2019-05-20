@@ -38,7 +38,7 @@ app.get('/poi/getrandomPOI/:minimalRank', (req, res)=>{
         });
 });
 
-// 3: RESTORE PASSWORD todo: validate with db and retrieve password.
+// 3: RESTORE PASSWORD
 app.post("/users/restorePassword", (req, res)=>{
     var data = {
         'username': req.body['username'],
@@ -195,20 +195,16 @@ app.put("/users/updateusercategories", (req, res)=>{
 });
 
 // 13: GET ALL POI REVIEWS todo: connect to db
-app.get("/poi/getallpoireviews", (req, res)=>{
-    var poiName = req.body['POIName'];
-    console.log(poiName);
-    var ansDict={};
-    for(var i=0; i<=2; i++){
-        ansDict[i] = {
-            rating:4,
-            content:"wonderfull great",
-            date: "20/5/2030"
-        };
-    }
-    res.status(200).json({
-        poiReviews: ansDict
-    });
+app.get("/poi/getallpoireviews/:poiName", (req, res)=>{
+    var poiName = req.params.poiName;
+    poiModule.getAllPOIReviews(poiName)
+        .then((data)=>
+            res.status(200).send(data))
+        .catch((err)=>{
+            console.log(err);
+            res.status(400).send("Not Found");
+        });
+
 });
 
 // 14: GET USER AUTH QUESTION (SECURITY Q) todo: connect to db
@@ -233,21 +229,20 @@ app.get("/getpossiblecountriesforregistration", (req, res)=>{
 });
 
 // 16: GET SEARCH RESULTS BY POI NAME
-app.get("/poi/getsearchresultsbypoiname", (req, res)=>{
-    var poiName = req.body["POIName"];
+app.get("/poi/getsearchresultsbypoiname/:name", (req, res)=>{
+    // var poiName = "'"+req.params.name+"'";
+    var poiName =req.params.name;
     console.log(poiName);
-    var ansDict={};
-    for(var i=0; i<=3; i++){
-        ansDict[i] = {
-            POIName:"Haifa"
-        };
-    }
-    res.status(200).json({
-        searchResults: ansDict
-    });
+    poiModule.searchPOI(poiName)
+        .then((data)=>
+            res.status(200).send(data))
+        .catch((err)=>{
+            console.log(err);
+            res.status(400).send("Not Found");
+        });
 });
 
-// 17: SET USER FAVOURITE POI
+// 17: SET USER FAVOURITE POI todo: connect to db
 app.put("/users/setuserfavouritepoi", (req, res)=>{
     var newFavouritePoi= req.body;
     console.log(newFavouritePoi);
@@ -284,13 +279,19 @@ app.delete("/users/removeuserfavouritepoi", (req, res)=>{
     res.status(200).send("deleted: "+poiName);
 });
 
-// 21: ADD POI REVIEW todo: connect to db
+// 21: ADD POI REVIEW
 app.post("/poi/addpoireview", (req, res)=>{
     var poiName = req.body['POIName'];
     var rating = req.body['rating'];
     var content = req.body['content'];
 
-    res.status(200).send(poiName+","+rating+","+content);
+    poiModule.addReview(poiName,content,rating)
+        .then((data)=>
+            res.status(200).send(data))
+        .catch((err)=>{
+            console.log(err);
+            res.status(400).send("Not Found");
+        });
 });
 
 //***********************    added functions   *****************************************************************
