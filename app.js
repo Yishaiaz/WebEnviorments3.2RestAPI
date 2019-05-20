@@ -243,11 +243,21 @@ app.get("/poi/getsearchresultsbypoiname/:name", (req, res)=>{
 });
 
 // 17: SET USER FAVOURITE POI todo: connect to db
+// todo: change the documentation to receive
 app.put("/users/setuserfavouritepoi", (req, res)=>{
-    var newFavouritePoi= req.body;
+    var newFavouritePoi= req.body['POI'];
+    var username = req.body['username'];
+    var todayDate = Date.now();
     console.log(newFavouritePoi);
-    res.status(200).send("worked");
+    userModule.addFavouritePOIToUser(newFavouritePoi)
+        .then((data)=>
+            res.status(200).send(data))
+        .catch((err)=>{
+            console.log(err);
+            res.status(400).send("Not Found");
+        });
 });
+
 
 
 // 18: GET USER FAVOURITE POI todo: connect to db
