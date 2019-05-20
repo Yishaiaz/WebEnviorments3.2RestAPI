@@ -84,9 +84,9 @@ app.post("/users/addUser", (req, res)=>{
     var categories=req.body['categories'];
 
     var result = userModule.addUser(username,password,firstName,lastName,city,country,email,securityQuestion1,securityAns1, securityQuestion2,securityAns2)
-        .then((user)=>userModule.addUserCategories(username,categories))
-        .then((data)=>
-            res.status(200).send(data))
+        .then((token)=>userModule.addUserCategories(username,categories,token))
+        .then((token)=>
+            res.status(200).send(token))
         .catch((err)=>{
             console.log(err);
             res.status(400).send("Not Found");
