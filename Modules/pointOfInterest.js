@@ -16,7 +16,7 @@ module.exports.getAll =  function(){
           } else if (rows) {
               for (let i = 0; i < rows.length; i++) {
                   let results={};
-                  rows[0].forEach(function(row){
+                  rows[i].forEach(function(row){
                       results[row['col']]=row.val;
                   });
                   resultsArray.push(results);
@@ -46,7 +46,6 @@ module.exports.getPOIDetails =  function(POIName){
         });
     });
 };
-//todo: return 3 random poi now returns only 1.
 module.exports.getRandomPOI =  function(minimalRank){
     let resultsArray=[];
     return new Promise((resolve, reject)=>{
@@ -73,7 +72,7 @@ module.exports.getRandomPOI =  function(minimalRank){
 };
 
 module.exports.searchPOI =  function(poiName){
-    let results={};
+    let resultsArray=[];
     return new Promise((resolve, reject)=>{
         let query="SELECT * FROM POI WHERE POIName LIKE '%"+poiName+"%'";
         console.log(query);
@@ -82,10 +81,14 @@ module.exports.searchPOI =  function(poiName){
                 console.log("error"+err);
                 reject('error'+err);
             } else if (rows) {
-                rows[0].forEach(function(row){
-                    results[row['col']]=row.val;
-                });
-                resolve(results);
+                for (let i = 0; i < rows.length; i++) {
+                    let results={};
+                    rows[i].forEach(function(row){
+                        results[row['col']]=row.val;
+                    });
+                    resultsArray.push(results);
+                }
+                resolve(resultsArray);
             } else {
                 reject("Not Found");
             }
@@ -122,7 +125,7 @@ module.exports.getAllPOIReviews =  function(POIName){
             } else if (rows) {
                 for (let i = 0; i < rows.length; i++) {
                     let results={};
-                    rows[0].forEach(function(row){
+                    rows[i].forEach(function(row){
                         results[row['col']]=row.val;
                     });
                     resultsArray.push(results);
@@ -148,7 +151,7 @@ module.exports.getPOIByCategory =  function (categoryName) {
                 console.log("adding rows");
                 for (let i = 0; i < rows.length; i++) {
                     let results={};
-                    rows[0].forEach(function(row){
+                    rows[i].forEach(function(row){
                         results[row['col']]=row.val;
                     });
                     resultsArray.push(results);

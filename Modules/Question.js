@@ -10,7 +10,7 @@ module.exports.getAll =  function(){
             } else if (rows) {
                 for (let i = 0; i < rows.length; i++) {
                     let results={};
-                    rows[0].forEach(function(row){
+                    rows[i].forEach(function(row){
                         results[row['col']]=row.val;
                     });
                     resultsArray.push(results);
