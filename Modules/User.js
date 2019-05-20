@@ -1,13 +1,19 @@
 const azureControler = require("../dbControllers/azureDb");
-
+const jwt= require('jsonwebtoken');
 module.exports.userLogin =  function(username, password){
     return new Promise((resolve, reject)=>{
-        azureControler.runQuery("SELECT * FROM Users where username="+username+" AND password="+password, function(err, rows) {
+        azureControler.runQuery("SELECT username FROM Users where username="+username+" AND password="+password, function(err, rows) {
             if (err) {
                 console.log("error"+err);
                 reject('error'+err);
             } else if (rows) {
-                resolve("login succeed");
+                let results={};
+                rows[0].forEach(function(row){
+                    results[row['col']]=row.val;
+                });
+                let userName=rows[0][0]['val'];
+                const token=jwt.sign({username: userName},'myPrivateKey');
+                resolve(token);
             } else {
                 resolve("login failed");
                 console.log("wrong username or password");

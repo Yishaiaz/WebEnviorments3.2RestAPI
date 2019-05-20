@@ -194,7 +194,7 @@ app.put("/users/updateusercategories", (req, res)=>{
     res.status(200).send('worked');
 });
 
-// 13: GET ALL POI REVIEWS todo: connect to db
+// 13: GET ALL POI REVIEWS
 app.get("/poi/getallpoireviews/:poiName", (req, res)=>{
     var poiName = req.params.poiName;
     poiModule.getAllPOIReviews(poiName)
