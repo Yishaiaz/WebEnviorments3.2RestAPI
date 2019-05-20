@@ -177,7 +177,7 @@ app.get("/poi/getuserlast2savedpoi", (req, res)=>{
     });
 });
 
-// 11: GET N [NUMBER] RANDOM IMAGES todo: connect to db
+// 11: GET N [NUMBER] RANDOM IMAGES
 app.get("/poi/getnrandomimages/:numOfImages", (req, res)=>{
     var numberOfRandomImagesRequested = parseInt(req.params.numOfImages);
     console.log(numberOfRandomImagesRequested);
@@ -191,15 +191,6 @@ app.get("/poi/getnrandomimages/:numOfImages", (req, res)=>{
             console.log(err);
             res.status(404).send("Not Found");
         });
-    // var ansDict={};
-    // for(var i=0; i<=parseInt(numberOfRandomImagesRequested); i++){
-    //     ansDict[i] = {
-    //         img_url:"https://www.templers-haifa.co.il/wp-content/uploads/2014/12/templers-haifa-25-12-2014-ben-gurion.jpg"
-    //     };
-    // }
-    // res.status(200).json({
-    //     imagesJson: ansDict
-    // });
 });
 
 // 12: UPDATE USER CATEGORIES todo: connect to db
