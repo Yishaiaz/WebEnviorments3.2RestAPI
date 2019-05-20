@@ -154,24 +154,19 @@ module.exports.getPOIByCategory =  function (categoryName) {
 };
 
 module.exports.getRandomImgUrls= function(numOfImagesRequested){
-    let resultsArray = [];
+    let resultsArray = {};
     return new Promise((resolve, reject) =>{
         let query=`SELECT imgUrl FROM POI`;
-        console.log(query);
         azureControler.runQuery(query, function(err, rows) {
             if (err) {
                 console.log("error"+err);
                 reject('error'+err);
             } else if (rows) {
-                console.log("adding rows");
-                for (let i = 0; i < rows.length; i++) {
-                    let results={};
-                    rows[0].forEach(function(row){
-                        results[row['col']]=row.val;
-                    });
-                    resultsArray.push(results);
+                for (let i = 0; i < numOfImagesRequested; i++) {
+                    let randValue=Math.floor(Math.random() * rows.length);
+                    var value = rows[randValue][0].val;
+                    resultsArray[i]= value;
                 }
-                console.log("resolving");
                 resolve(resultsArray);
             } else {
                 reject("Not Found");
