@@ -82,18 +82,6 @@ app.post("/users/restorePassword", (req, res)=>{
         });
 });
 
-// // 4: INSERT QUESTION todo:connect to db
-// app.post("/users/insertQuestionToUser", (req,res)=>{
-//     var data={
-//         'username': req.body['username'],
-//         'question':req.body['question'],
-//         'answer': req.body['answer']
-//     };
-//     console.log(data);
-//     res.status(200).json({
-//         'success':1
-//     });
-// });
 
 // 5: ADD USER
 app.post("/users/addUser", (req, res)=>{
