@@ -3,16 +3,14 @@ const azureControler = require("../dbControllers/azureDb");
 const jwt= require('jsonwebtoken');
 module.exports.userLogin =  function(username, password){
     return new Promise((resolve, reject)=>{
-        azureControler.runQuery("SELECT username FROM Users where username="+username+" AND password="+password, function(err, rows) {
+        azureControler.runQuery(`SELECT username FROM Users where username='${username}' AND password='${password}'`, function(err, rows) {
             if (err) {
                 console.log("error"+err);
                 reject('error'+err);
             } else if (rows) {
-                let userName=rows[0][0]['val'];
-                const token=jwt.sign({username: userName},'myPrivateKey');
-                resolve(token);
+                resolve(username);
             } else {
-                resolve("login failed");
+                reject('error'+err);
                 console.log("wrong username or password");
 
             }
@@ -28,8 +26,7 @@ module.exports.addUser= async function (username, password,firstname,lastname,ci
                 console.log("error"+err);
                 reject('error'+err);
             } else if (rows) {
-                const token=jwt.sign({username: username},'myPrivateKey');
-                resolve(token);
+                resolve(username);
             } else {
                 resolve("add user failed");
                 console.log("add fail");
@@ -73,7 +70,7 @@ module.exports.addFavouritePOIToUser = function(username, newFavouritePoi) {
 };
 
 
-module.exports.addUserCategories = function(username, categories,token) {
+module.exports.addUserCategories = function(username, categories) {
     return new Promise((resolve, reject)=>{
         // let query=`INSERT INTO UsersCategories VALUES ('${username}','${newFavouritePoi}',GETDATE())`;
         let query="INSERT INTO UsersCategories VALUES ";
@@ -88,7 +85,7 @@ module.exports.addUserCategories = function(username, categories,token) {
                 console.log("error"+err);
                 reject('error'+err);
             } else if (rows) {
-                resolve(token);
+                resolve(username);
             } else {
                 resolve("Not Found");
                 console.log("wrong username or Q&A");
