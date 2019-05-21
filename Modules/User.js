@@ -96,7 +96,7 @@ module.exports.addUserCategories = function(username, categories) {
 
 module.exports.get2popularpoi =  function(username){
     return new Promise((resolve, reject)=>{
-        azureControler.runQuery(`SELECT username FROM Users where username='${username}' AND password='${password}'`, function(err, rows) {
+        azureControler.runQuery(`SELECT POIName, imgUrl FROM POI where POIName='${username}' AND password='${password}'`, function(err, rows) {
             if (err) {
                 console.log("error"+err);
                 reject('error'+err);
