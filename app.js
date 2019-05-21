@@ -259,10 +259,10 @@ app.get("/poi/getsearchresultsbypoiname/:name", (req, res)=>{
 // 17: SET USER FAVOURITE POI
 // todo: change documentation for this function
 // todo: change username parameter from body to token
-app.put("/users/setuserfavouritepoi", (req, res)=>{
+app.put("/private/users/setuserfavouritepoi", (req, res)=>{
     var newPoiOrder= req.body['POI'];
-    // var username= req.decoded['username'];
-    var username = req.body['username'];
+    var username= req.decoded['username'];
+    // var username = req.body['username'];
     console.log(newPoiOrder);
     userModule.setUserFavouritePOIOrder(username, newPoiOrder)
         .then((data)=>{
@@ -295,9 +295,9 @@ app.get("/private/users/getuserfavouritepoi", (req, res)=>{
 
 // 19: ADD USER FAVOURITE POI
 // todo: change documentation to not receive liked date data.
-app.put("/users/adduserfavouritepoi", (req, res)=>{
+app.put("/private/users/adduserfavouritepoi", (req, res)=>{
     var newFavouritePoi= req.body['POIName'];
-    var username = req.body['username'];
+    var username = req.decoded['username'];
     console.log(newFavouritePoi);
     userModule.addFavouritePOIToUser(username, newFavouritePoi)
         .then((data)=>
