@@ -181,8 +181,8 @@ app.get("/poi/getallpoibycategory/:categoryName", (req, res)=>{
 });
 
 // 10: GET USER LAST 2 SAVED POI todo: connect to db
-app.get("/poi/getuserlast2savedpoi", (req, res)=>{
-    var username = req.body['username'];
+app.get("/private/users/getuserlast2savedpoi", (req, res)=>{
+    var username= req.decoded['username'];
     console.log(username);
     res.status(200).json({
         'poi1':{
@@ -213,7 +213,8 @@ app.get("/poi/getnrandomimages/:numOfImages", (req, res)=>{
 });
 
 // 12: UPDATE USER CATEGORIES todo: connect to db
-app.put("/users/updateusercategories", (req, res)=>{
+app.put("/private/users/updateusercategories", (req, res)=>{
+    var username= req.decoded['username'];
     var newCategories = req.body;
     console.log(newCategories);
     res.status(200).send('worked');
@@ -233,8 +234,8 @@ app.get("/poi/getallpoireviews/:poiName", (req, res)=>{
 });
 
 // 14: GET USER AUTH QUESTION (SECURITY Q) todo: connect to db
-app.get("/users/getuserauthquestion", (req, res)=>{
-    var username = req.body['username'];
+app.get("/private/users/getuserauthquestion", (req, res)=>{
+    var username= req.decoded['username'];
     console.log(username);
 
     res.status(200).json({
@@ -285,7 +286,8 @@ app.put("/users/setuserfavouritepoi", (req, res)=>{
 
 
 // 18: GET USER FAVOURITE POI todo: connect to db
-app.get("/users/getuserfavouritepoi", (req, res)=>{
+app.get("/private/users/getuserfavouritepoi", (req, res)=>{
+    var username= req.decoded['username'];
     var poiName = req.body["username"];
     console.log(poiName);
     var ansDict={};
@@ -313,8 +315,8 @@ app.put("/users/adduserfavouritepoi", (req, res)=>{
 });
 
 // 20: REMOVE USER FAVOURITE POI todo: connect to db
-app.delete("/users/removeuserfavouritepoi", (req, res)=>{
-    var username = req.body["username"];
+app.delete("/private/users/removeuserfavouritepoi", (req, res)=>{
+    var username= req.decoded['username'];
     var poiName= req.body["POIName"];
     console.log(username+","+poiName);
     res.status(200).send("deleted: "+poiName);
