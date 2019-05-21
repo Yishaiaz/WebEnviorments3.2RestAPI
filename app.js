@@ -4,7 +4,9 @@ const poiModule = require("./Modules/pointOfInterest");
 const questionModule = require("./Modules/Question");
 const countriesModule = require("./Modules/Countries");
 const userModule = require("./Modules/user");
+const jwt= require('jsonwebtoken');
 const app = express();
+const secret="myPrivateKey";
 
 // ENABLES US TO PARSE JSON'S DIRECTLY FROM REQ/RES
 app.use(express.json() );
@@ -13,12 +15,16 @@ app.use(express.json() );
 
 // 1: LOGIN
 app.post("/users/login", (req, res)=>{
-    var username = "'"+req.body["username"]+"'";
-    var password = "'"+req.body["password"]+"'";
+    var username = req.body["username"];
+    var password = req.body["password"];
 
     var result = userModule.userLogin(username,password)
-        .then((data)=>
-            res.status(200).send(data))
+        .then((username)=>{
+            let payload = { username: username };
+            let options = { expiresIn: "1d" };
+            const token = jwt.sign(payload, secret, options);
+            res.status(200).send(token)
+        })
         .catch((err)=>{
             console.log(err);
             res.status(400).send("Not Found");
@@ -87,9 +93,13 @@ app.post("/users/addUser", (req, res)=>{
         res.status(400).send("register failed. you need at least 2 categories");
     else{
         userModule.addUser(username,password,firstName,lastName,city,country,email,securityQuestion1,securityAns1, securityQuestion2,securityAns2)
-            .then((token)=>userModule.addUserCategories(username,categories,token))
-            .then((token)=>
-                res.status(200).send(token))
+            .then((data)=>userModule.addUserCategories(username,categories))
+            .then((username)=>{
+                let payload = { username: username };
+                let options = { expiresIn: "1d" };
+                const token = jwt.sign(payload, secret, options);
+                res.status(200).send(token)
+            })
             .catch((err)=>{
                 console.log(err);
                 res.status(400).send("Not Found");
@@ -98,27 +108,16 @@ app.post("/users/addUser", (req, res)=>{
 });
 
 // 6: GET 2 POPULAR POI BY USER ID ((ID)=>INTERESTS) todo: connect to db
-app.get("/poi/get2popularpoi", (req, res)=>{
-    var username = req.body['username'];
+app.get("/users/get2popularpoi/:username", (req, res)=>{
+    var username = req.params.username;
     console.log(username);
-    res.status(200).json({
-        'poi1':{
-            'poi_data': {
-                'id':'123',
-                'title': 'Haifa',
-                'image_url': 'https://www.thenational.ae/image/policy:1.763876:1535285300/Haifa.jpg?f=16x9&w=1200&$p$f$w=83e38b4',
-                'description': 'night shot of Haifa bay.<br>wonderful'
-            }
-        },
-        'poi2':{
-            'poi_data': {
-                'id':'123',
-                'title': 'Haifa',
-                'image_url': 'https://www.thenational.ae/image/policy:1.763876:1535285300/Haifa.jpg?f=16x9&w=1200&$p$f$w=83e38b4',
-                'description': 'night shot of Haifa bay.<br>great'
-            }
-        }
-    });
+    userModule.addUser(username)
+        .then((token)=>
+            res.status(200).send(token))
+        .catch((err)=>{
+            console.log(err);
+            res.status(400).send("Not Found");
+        });
 });
 
 // 7: GET POI DETAILS
