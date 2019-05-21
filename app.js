@@ -130,7 +130,7 @@ app.post("/users/addUser", (req, res)=>{
 
 // 6: GET 2 POPULAR POI BY USER ID ((ID)=>INTERESTS) todo: connect to db
 app.get("/private/users/get2popularpoi", (req, res)=>{
-    var username= req.body['userName'];
+    var username= req.decoded['username'];
     userModule.get2popularpoi(username)
         .then((token)=>
             res.status(200).send(token))
