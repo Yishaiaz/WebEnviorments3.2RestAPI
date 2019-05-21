@@ -107,7 +107,7 @@ app.post("/users/addUser", (req, res)=>{
     }
 });
 
-// 6: GET 2 POPULAR POI BY USER ID ((ID)=>INTERESTS) todo: connect to db
+// 6: GET 2 POPULAR POI BY USER ID ((ID)=>INTERESTS) todo: connect to db, change documentation change to post and input token
 app.get("/users/get2popularpoi/:username", (req, res)=>{
     var username = req.params.username;
     console.log(username);
@@ -121,8 +121,8 @@ app.get("/users/get2popularpoi/:username", (req, res)=>{
 });
 
 // 7: GET POI DETAILS
-app.get("/poi/getpoidetails", (req, res)=>{
-    var poiName = req.body['POIName'];
+app.get("/poi/getpoidetails/:POIName", (req, res)=>{
+    var poiName = req.params.POIName;
     poiName = "'"+poiName+"'";
     var result = poiModule.getPOIDetails(poiName)
         .then((data)=>
@@ -247,7 +247,7 @@ app.get("/poi/getsearchresultsbypoiname/:name", (req, res)=>{
         });
 });
 
-// 17: SET USER FAVOURITE POI todo: connect to db
+// 17: SET USER FAVOURITE POI
 // todo: change documentation for
 app.put("/users/setuserfavouritepoi", (req, res)=>{
     var newFavouritePoi= req.body['poi'];
