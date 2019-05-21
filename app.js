@@ -12,6 +12,27 @@ const secret="myPrivateKey";
 app.use(express.json() );
 
 // REST API routes:
+// app.use('/private', userModule(req, res, next));
+
+//middleware
+app.use('/private', function (req, res, next) {
+    const token = req.header("x-auth-token");
+    // no token
+    if (!token){
+        res.status(401).send("Access denied.");
+    }
+    else{
+        // verify token
+        try {
+            const decoded = jwt.verify(token, secret);
+            req.decoded = decoded;
+            next();
+        } catch (exception) {
+            res.status(400).send("Invalid token.");
+        }
+    }
+});
+
 
 // 1: LOGIN
 app.post("/users/login", (req, res)=>{
@@ -107,11 +128,10 @@ app.post("/users/addUser", (req, res)=>{
     }
 });
 
-// 6: GET 2 POPULAR POI BY USER ID ((ID)=>INTERESTS) todo: connect to db, change documentation change to post and input token
-app.get("/users/get2popularpoi/:username", (req, res)=>{
-    var username = req.params.username;
-    console.log(username);
-    userModule.addUser(username)
+// 6: GET 2 POPULAR POI BY USER ID ((ID)=>INTERESTS) todo: connect to db
+app.get("/private/users/get2popularpoi", (req, res)=>{
+    var username= req.body['userName'];
+    userModule.get2popularpoi(username)
         .then((token)=>
             res.status(200).send(token))
         .catch((err)=>{
