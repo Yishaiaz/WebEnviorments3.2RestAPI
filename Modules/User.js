@@ -1,5 +1,6 @@
 
 
+
 const azureControler = require("../dbControllers/azureDb");
 const jwt= require('jsonwebtoken');
 module.exports.userLogin =  function(username, password){
@@ -160,5 +161,25 @@ module.exports.setUserFavouritePOIOrder = function(username, newPoisOrder) {
     });
     return new Promise((resolve, reject) => {
         resolve("great!");
+    });
+};
+
+module.exports.getUserAuthQuestion = function (username) {
+    return new Promise((resolve, reject)=>{
+        azureControler.runQuery(`SELECT Question1, Question2 FROM Users where username='${username}'`, function(err, rows) {
+            if (err) {
+                console.log("error"+err);
+                reject('error'+err);
+            } else if (rows) {
+                var results={};
+                results["Question1"] = rows[0][0].val;
+                results["Question2"] = rows[0][1].val;
+                resolve(results);
+            } else {
+                reject('error'+err);
+                console.log("wrong username or password");
+
+            }
+        });
     });
 };

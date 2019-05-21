@@ -221,14 +221,16 @@ app.get("/poi/getallpoireviews/:poiName", (req, res)=>{
 
 });
 
-// 14: GET USER AUTH QUESTION (SECURITY Q) todo: connect to db
+// 14: GET USER AUTH QUESTION (SECURITY Q)
 app.get("/private/users/getuserauthquestion", (req, res)=>{
     var username= req.decoded['username'];
-    console.log(username);
-
-    res.status(200).json({
-        question:"why?"
-    });
+    userModule.getUserAuthQuestion(username)
+        .then((data)=>{
+            res.status(200).send(data);
+        })
+        .catch((err)=>{
+            res.status(400).send(err);
+        });
 });
 
 // 15: GET POSSIBLE COUNTRIES FOR REGISTRATION
