@@ -98,8 +98,8 @@ app.post("/users/addUser", (req, res)=>{
     var securityAns2= req.body['A2'];
     var categories=req.body['categories'];
 
-    if(categories.length<2)
-        res.status(400).send("register failed. you need at least 2 categories");
+    if(categories.length<2 || username.length<3 || username.length<8 || password.length<5 || password.length>10)
+        res.status(400).send("register failed. you need at least 2 categories, userName length between 3-8 and password between 5-10");
     else{
         userModule.addUser(username,password,firstName,lastName,city,country,email,securityQuestion1,securityAns1, securityQuestion2,securityAns2)
             .then((data)=>userModule.addUserCategories(username,categories))
@@ -327,13 +327,13 @@ app.delete("/private/users/removeuserfavouritepoi", (req, res)=>{
 });
 
 // 21: ADD POI REVIEW
-app.post("/poi/addpoireview", (req, res)=>{
+app.post("/private/users/addpoireview", (req, res)=>{
+    var username= req.decoded["username"];
     var poiName = req.body['POIName'];
     var rating = req.body['rating'];
     var content = req.body['content'];
-    var username = req.body['username'];
 
-    poiModule.addReview(poiName,content,rating,username)
+    userModule.addReview(poiName,content,rating,username)
         .then((data)=>
             res.status(200).send(data))
         .catch((err)=>{

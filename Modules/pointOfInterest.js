@@ -96,23 +96,6 @@ module.exports.searchPOI =  function(poiName){
     });
 };
 
-module.exports.addReview =  function(poiName,content,rating,username){
-    return new Promise((resolve, reject)=>{
-        let query=`INSERT INTO Reviews VALUES ('${username}',`+rating+`,'${content}','${poiName}',GETDATE())`;
-        console.log(query);
-        azureControler.runQuery(query, function(err, rows) {
-            if (err) {
-                console.log("error"+err);
-                reject('error'+err);
-            } else if (rows) {
-                resolve('Review added succeed');
-            } else {
-                reject("Not Found");
-            }
-        });
-    });
-};
-
 module.exports.getAllPOIReviews =  function(POIName){
     let resultsArray=[];
     return new Promise((resolve, reject)=>{
