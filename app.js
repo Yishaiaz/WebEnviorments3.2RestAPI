@@ -169,7 +169,6 @@ app.get("/poi/getallpoibycategory/:categoryName", (req, res)=>{
 });
 
 // 10: GET USER LAST 2 SAVED POI
-// todo: change documentation to receive token
 app.get("/private/users/getuserlast2savedpoi", (req, res)=>{
     var username= req.decoded['username'];
     userModule.getUserLast2SavedPOI(username)
@@ -225,8 +224,8 @@ app.get("/poi/getallpoireviews/:poiName", (req, res)=>{
 });
 
 // 14: GET USER AUTH QUESTION (SECURITY Q)
-app.get("/private/users/getuserauthquestion", (req, res)=>{
-    var username= req.decoded['username'];
+app.get("/users/getuserauthquestion/:username", (req, res)=>{
+    var username= req.params.username;
     userModule.getUserAuthQuestion(username)
         .then((data)=>{
             res.status(200).send(data);
@@ -267,7 +266,6 @@ app.get("/poi/getsearchresultsbypoiname/:name", (req, res)=>{
 app.put("/private/users/setuserfavouritepoi", (req, res)=>{
     var newPoiOrder= req.body['POI'];
     var username= req.decoded['username'];
-    // var username = req.body['username'];
     console.log(newPoiOrder);
     userModule.setUserFavouritePOIOrder(username, newPoiOrder)
         .then((data)=>{

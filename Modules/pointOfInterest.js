@@ -124,7 +124,7 @@ module.exports.getPOIByCategory =  function (categoryName) {
     let resultsArray = [];
     console.log("in poi/getpoibycategory");
     return new Promise((resolve, reject) =>{
-        let query=`SELECT POIName, imgUrl FROM POICategories where categoryName = '${categoryName}'`;
+        let query = `SELECT p.POIName, p.imgUrl FROM POI p JOIN POICategories pc ON pc.POIName = p.POIName WHERE pc.categoryName = '${categoryName}'`;
         console.log(query);
         azureControler.runQuery(query, function(err, rows) {
             if (err) {
