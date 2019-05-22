@@ -219,3 +219,68 @@ module.exports.deleteUserPOI = function (username, poiName) {
        });
     });
 };
+
+module.exports.getUserLast2SavedPOI=  function (username) {
+    var allUserPOIandImgUrl = new Promise((resolve, reject) => {
+        let query = `SELECT p.POIName, p.imgUrl, up.date FROM POI p JOIN UsersPOI up ON up.POIName = p.POIName WHERE up.username = '${username}'`;
+        azureControler.runQuery(query, function(err, rows){
+            if(err){
+                console.log(err);
+                reject(err);
+            }else if(rows){
+                let results=[];
+                rows.forEach((row)=>{
+                    let singleRow={};
+                    singleRow["POIName"] = row[0].val;
+                    singleRow["imgUrl"] = row[1].val;
+                    singleRow["date"] = row[2].val;
+                    results.push(singleRow);
+                });
+                resolve(results);
+            }else{
+                resolve("Not Found");
+            }
+        });
+    });
+    return allUserPOIandImgUrl
+        .then((data)=>{
+
+            let highestDate= new Date(-8640000000000000);
+            let secondHighestDate = new Date(-8640000000000000);
+            var results=[];
+            data.forEach((row)=>{
+                console.log(row);
+                if(row['date']> secondHighestDate && row['date'] > highestDate){
+                    secondHighestDate = highestDate;
+                    highestDate = row['date'];
+                }
+                if(row['date']> secondHighestDate && row['date'] < highestDate){
+                    secondHighestDate = row['date'];
+                }
+                if(row['date']> highestDate){
+                    highestDate = row['date'];
+                }
+            });
+            data.forEach((row)=>{
+               if(row['date']===highestDate){
+                   results.push({
+                       "POIName": row['POIName'],
+                       "imgUrl": row['imgUrl']
+                   });
+               } else if(row['date']===secondHighestDate){
+                   results.push({
+                       "POIName": row['POIName'],
+                       "imgUrl": row['imgUrl']
+                   });
+               }
+            });
+            return new Promise((resolve, reject) => {
+                resolve(results);
+            });
+        })
+        .catch((err)=>{
+            return new Promise((resolve, reject) => {
+                reject(err);
+            });
+        });
+};
