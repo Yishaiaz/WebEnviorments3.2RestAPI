@@ -168,20 +168,17 @@ app.get("/poi/getallpoibycategory/:categoryName", (req, res)=>{
         });
 });
 
-// 10: GET USER LAST 2 SAVED POI todo: connect to db
+// 10: GET USER LAST 2 SAVED POI
+// todo: change documentation to receive token
 app.get("/private/users/getuserlast2savedpoi", (req, res)=>{
     var username= req.decoded['username'];
-    console.log(username);
-    res.status(200).json({
-        'poi1':{
-            'poi_data': {
-                'id':'123',
-                'title': 'Haifa',
-                'image_url': 'https://www.thenational.ae/image/policy:1.763876:1535285300/Haifa.jpg?f=16x9&w=1200&$p$f$w=83e38b4',
-                'description': 'night shot of Haifa bay.<br>great'
-            }
-        }
-    });
+    userModule.getUserLast2SavedPOI(username)
+        .then((data)=>{
+            res.status(200).send(data);
+        })
+        .catch((err)=>{
+            res.status(400).send("Not Found");
+        });
 });
 
 // 11: GET N [NUMBER] RANDOM IMAGES
