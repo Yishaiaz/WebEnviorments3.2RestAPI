@@ -31,7 +31,7 @@ module.exports.getAll =  function(){
 module.exports.getPOIDetails =  function(POIName){
     let results={};
     return new Promise((resolve, reject)=>{
-        azureControler.runQuery("SELECT * FROM POI where POIName="+POIName, function(err, rows) {
+        azureControler.runQuery(`SELECT * FROM POI where POIName='${POIName}'`, function(err, rows) {
             if (err) {
                 console.log("error"+err);
                 reject('error'+err);
@@ -180,6 +180,23 @@ module.exports.getRandomImgUrls= function(numOfImagesRequested){
                     resultsArray[i]= value;
                 }
                 resolve(resultsArray);
+            } else {
+                reject("Not Found");
+            }
+        });
+    });
+};
+
+module.exports.incrementViews =  function(poiName){
+    let resultsArray=[];
+    return new Promise((resolve, reject)=>{
+        let query=`UPDATE POI SET views = views + 1 WHERE POIName = '${poiName}'`;
+        azureControler.runQuery(query, function(err, rows) {
+            if (err) {
+                console.log("error"+err);
+                reject('error'+err);
+            } else if (rows) {
+                resolve(poiName);
             } else {
                 reject("Not Found");
             }

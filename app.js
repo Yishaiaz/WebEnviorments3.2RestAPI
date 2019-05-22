@@ -131,8 +131,8 @@ app.get("/private/users/get2popularpoi", (req, res)=>{
 // 7: GET POI DETAILS
 app.get("/poi/getpoidetails/:POIName", (req, res)=>{
     var poiName = req.params.POIName;
-    poiName = "'"+poiName+"'";
-    var result = poiModule.getPOIDetails(poiName)
+    poiModule.incrementViews(poiName)
+        .then((poiName)=>poiModule.getPOIDetails(poiName))
         .then((data)=>
             res.status(200).send(data))
         .catch((err)=>{
