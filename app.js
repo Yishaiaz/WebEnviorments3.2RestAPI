@@ -197,12 +197,18 @@ app.get("/poi/getnrandomimages/:numOfImages", (req, res)=>{
         });
 });
 
-// 12: UPDATE USER CATEGORIES todo: connect to db
+// 12: UPDATE USER CATEGORIES
 app.put("/private/users/updateusercategories", (req, res)=>{
     var username= req.decoded['username'];
     var newCategories = req.body;
     console.log(newCategories);
-    res.status(200).send('worked');
+    userModule.updateUserCategories(username, newCategories)
+        .then((data)=>{
+            res.status(200).send(data);
+        })
+        .catch((err)=>{
+            res.status(400).send(err);
+        });
 });
 
 // 13: GET ALL POI REVIEWS
