@@ -307,6 +307,7 @@ module.exports.getUserLast2SavedPOI=  function (username) {
 };
 module.exports.updateUserCategories =  function (username, newCategories) {
     var deletePromise = new Promise((resolve, reject) => {
+        console.log("username: "+username);
         let query = `DELETE FROM UsersCategories where username='${username}'`;
         azureControler.runQuery(query, function(err, rows){
             if(err){
@@ -314,7 +315,7 @@ module.exports.updateUserCategories =  function (username, newCategories) {
             }else if(rows){
                 resolve("success");
             }else{
-                reject("Not Found");
+                resolve("Not Found");
             }
         });
     });
