@@ -279,7 +279,7 @@ app.put("/private/users/setuserfavouritepoi", (req, res)=>{
 
 
 
-// 18: GET USER FAVOURITE POI 
+// 18: GET USER FAVOURITE POI
 app.get("/private/users/getuserfavouritepoi", (req, res)=>{
     var username= req.decoded['username'];
     userModule.getUserFavouritePOI(username)
@@ -313,10 +313,14 @@ app.put("/private/users/adduserfavouritepoi", (req, res)=>{
 
 // 20: REMOVE USER FAVOURITE POI todo: connect to db
 app.delete("/private/users/removeuserfavouritepoi", (req, res)=>{
-    var username= req.decoded['username'];
+    var username= req.decoded["username"];
     var poiName= req.body["POIName"];
-    console.log(username+","+poiName);
-    res.status(200).send("deleted: "+poiName);
+    // console.log(username+","+poiName);
+    userModule.deleteUserPOI(username, poiName)
+        .then((data)=>{
+            res.status(200).send("POI removed Successfully");
+        })
+        .catch((err)=> res.status(400).send(err));
 });
 
 // 21: ADD POI REVIEW

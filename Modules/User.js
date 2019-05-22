@@ -1,4 +1,5 @@
 
+
 const azureControler = require("../dbControllers/azureDb");
 const jwt= require('jsonwebtoken');
 module.exports.userLogin =  function(username, password){
@@ -203,4 +204,18 @@ module.exports.getUserFavouritePOI = function(username) {
             }
         });
     })
+};
+module.exports.deleteUserPOI = function (username, poiName) {
+    return new Promise((resolve, reject) => {
+       let query = `DELETE FROM UsersPOI where username='${username}' AND POIName='${poiName}'`;
+       azureControler.runQuery(query, function(err, rows){
+           if(err){
+               reject(err);
+           }else if(rows){
+               resolve("success");
+           }else{
+               reject("Not Found");
+           }
+       });
+    });
 };
