@@ -268,7 +268,6 @@ app.put("/private/users/setuserfavouritepoi", (req, res)=>{
     console.log(newPoiOrder);
     userModule.setUserFavouritePOIOrder(username, newPoiOrder)
         .then((data)=>{
-            console.log("here");
             if(data) res.status(200).send(data);
             else res.status(400).send("Not Found");
         })
@@ -280,19 +279,21 @@ app.put("/private/users/setuserfavouritepoi", (req, res)=>{
 
 
 
-// 18: GET USER FAVOURITE POI todo: connect to db
+// 18: GET USER FAVOURITE POI 
 app.get("/private/users/getuserfavouritepoi", (req, res)=>{
     var username= req.decoded['username'];
-    var poiName = req.body["username"];
-    console.log(poiName);
-    var ansDict={};
-    for(var i=0; i<=3; i++){
-        ansDict[i] = {
-            POIName:"Haifa",
-            imgUrl: "https://www.templers-haifa.co.il/wp-content/uploads/2014/12/templers-haifa-25-12-2014-ben-gurion.jpg"
-        };
-    }
-    res.status(200).send(ansDict);
+    userModule.getUserFavouritePOI(username)
+        .then((data)=>{
+            if(data){
+                res.status(200).send(data);
+            }else{
+                res.status(400).send("Not Found");
+            }
+        })
+        .catch((err)=>{
+            res.status(400).send(err);
+        });
+
 });
 
 // 19: ADD USER FAVOURITE POI

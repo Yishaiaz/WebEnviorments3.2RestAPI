@@ -1,6 +1,4 @@
 
-
-
 const azureControler = require("../dbControllers/azureDb");
 const jwt= require('jsonwebtoken');
 module.exports.userLogin =  function(username, password){
@@ -182,4 +180,27 @@ module.exports.getUserAuthQuestion = function (username) {
             }
         });
     });
+};
+
+module.exports.getUserFavouritePOI = function(username) {
+    return new Promise((resolve, reject) => {
+        let query = `SELECT p.POIName, p.imgUrl FROM POI p JOIN UsersPOI up ON up.POIName = p.POIName WHERE up.username = '${username}'`;
+        azureControler.runQuery(query, function(err, rows){
+            if(err){
+                console.log(err);
+                reject(err);
+            }else if(rows){
+                let results=[];
+                rows.forEach((row)=>{
+                    let singleRow={};
+                    singleRow["POIName"] = row[0].val;
+                    singleRow["imgUrl"] = row[1].val;
+                    results.push(singleRow);
+                });
+                resolve(results);
+            }else{
+                resolve("Not Found");
+            }
+        });
+    })
 };
