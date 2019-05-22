@@ -98,7 +98,7 @@ app.post("/users/addUser", (req, res)=>{
     var securityAns2= req.body['A2'];
     var categories=req.body['categories'];
 
-    if(categories.length<2 || username.length<3 || username.length<8 || password.length<5 || password.length>10)
+    if(categories.length<2 || username.length<3 || username.length>8 || password.length<5 || password.length>10)
         res.status(400).send("register failed. you need at least 2 categories, userName length between 3-8 and password between 5-10");
     else{
         userModule.addUser(username,password,firstName,lastName,city,country,email,securityQuestion1,securityAns1, securityQuestion2,securityAns2)
@@ -364,6 +364,20 @@ app.get("/getallcountries", (req, res)=>{
             console.log(err);
             res.status(400).send("Not Found");
         });
+});
+
+// 23: GET N POI REVIEWS
+app.get("/poi/getallpoireviews/:poiName/:numOfReviews", (req, res)=>{
+    var poiName = req.params.poiName;
+    var numOfReviews = req.params.numOfReviews;
+    poiModule.getNPOIReviews(poiName,numOfReviews)
+        .then((data)=>
+            res.status(200).send(data))
+        .catch((err)=>{
+            console.log(err);
+            res.status(400).send("Not Found");
+        });
+
 });
 
 

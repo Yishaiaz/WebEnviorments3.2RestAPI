@@ -186,3 +186,28 @@ module.exports.incrementViews =  function(poiName){
         });
     });
 };
+
+module.exports.getNPOIReviews =  function(POIName,numOfREviews){
+    let resultsArray=[];
+    return new Promise((resolve, reject)=>{
+        let query=`SELECT TOP ${numOfREviews} * FROM Reviews where POIName = '${POIName}' ORDER BY date DESC`;
+        console.log(query);
+        azureControler.runQuery(query, function(err, rows) {
+            if (err) {
+                console.log("error"+err);
+                reject('error'+err);
+            } else if (rows) {
+                for (let i = 0; i < rows.length; i++) {
+                    let results={};
+                    rows[i].forEach(function(row){
+                        results[row['col']]=row.val;
+                    });
+                    resultsArray.push(results);
+                }
+                resolve(resultsArray);
+            } else {
+                reject("Not Found");
+            }
+        });
+    });
+};
