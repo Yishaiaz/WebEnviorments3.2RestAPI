@@ -9,7 +9,7 @@ function jsoniFy(sqlRows){
 module.exports.getAll =  function(){
   let resultsArray=[];
   return new Promise((resolve, reject)=>{
-      azureControler.runQuery("SELECT * FROM POI", function(err, rows) {
+      azureControler.runQuery("SELECT POIName, imgUrl FROM POI", function(err, rows) {
           if (err) {
               console.log("error"+err);
               reject('error'+err);
@@ -49,7 +49,7 @@ module.exports.getPOIDetails =  function(POIName){
 module.exports.getRandomPOI =  function(minimalRank){
     let resultsArray=[];
     return new Promise((resolve, reject)=>{
-        azureControler.runQuery("SELECT * FROM POI WHERE rank>="+minimalRank, function(err, rows) {
+        azureControler.runQuery("SELECT POIName, imgUrl FROM POI WHERE rank>="+minimalRank, function(err, rows) {
             if (err) {
                 console.log("error"+err);
                 reject('error'+err);
@@ -74,7 +74,7 @@ module.exports.getRandomPOI =  function(minimalRank){
 module.exports.searchPOI =  function(poiName){
     let resultsArray=[];
     return new Promise((resolve, reject)=>{
-        let query="SELECT * FROM POI WHERE POIName LIKE '%"+poiName+"%'";
+        let query="SELECT POIName, imgUrl FROM POI WHERE POIName LIKE '%"+poiName+"%'";
         console.log(query);
         azureControler.runQuery(query, function(err, rows) {
             if (err) {
@@ -124,7 +124,7 @@ module.exports.getPOIByCategory =  function (categoryName) {
     let resultsArray = [];
     console.log("in poi/getpoibycategory");
     return new Promise((resolve, reject) =>{
-        let query=`SELECT POIName FROM POICategories where categoryName = '${categoryName}'`;
+        let query=`SELECT POIName, imgUrl FROM POICategories where categoryName = '${categoryName}'`;
         console.log(query);
         azureControler.runQuery(query, function(err, rows) {
             if (err) {
