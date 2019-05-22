@@ -80,13 +80,34 @@ module.exports.addUserCategories = function(username, categories) {
 };
 
 module.exports.get2popularpoi =  function(username){
+    let resultsArray=[];
     return new Promise((resolve, reject)=>{
-        azureControler.runQuery(`SELECT POIName, imgUrl FROM POI where POIName='${username}' AND password='${password}'`, function(err, rows) {
+        let query=`SELECT p.POIName, p.imgUrl
+        FROM POI p JOIN POICategories pc ON p.POIName=pc.POIName
+        JOIN (SELECT MAX(p.rank) AS maxRank , u.categoryName FROM POI p
+        JOIN POICategories pc ON p.POIName = pc.POIName
+        JOIN UsersCategories u ON u.categoryName = pc.categoryName
+        WHERE u.username='${username}'
+        GROUP BY u.categoryName) AS j
+        ON p.rank=j.maxRank AND pc.categoryName=j.categoryName`;
+        azureControler.runQuery(query, function(err, rows) {
             if (err) {
                 console.log("error"+err);
                 reject('error'+err);
             } else if (rows) {
-                resolve(username);
+                let ansSize=2;
+                if(rows.length<ansSize)
+                    ansSize=rows.length;
+                for (let i = 0; i < ansSize; i++) {
+                    let results={};
+                    let randomIndex=Math.floor(Math.random() * rows.length);
+                    rows[randomIndex].forEach(function(row){
+                        results[row['col']]=row.val;
+                    });
+                    resultsArray.push(results);
+                    rows.splice(randomIndex,1);
+                }
+                resolve(resultsArray);
             } else {
                 reject('error'+err);
                 console.log("wrong username or password");
