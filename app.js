@@ -311,7 +311,7 @@ app.put("/private/users/adduserfavouritepoi", (req, res)=>{
         });
 });
 
-// 20: REMOVE USER FAVOURITE POI todo: connect to db
+// 20: REMOVE USER FAVOURITE POI
 app.delete("/private/users/removeuserfavouritepoi", (req, res)=>{
     var username= req.decoded["username"];
     var poiName= req.body["POIName"];
