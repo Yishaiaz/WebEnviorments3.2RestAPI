@@ -305,3 +305,46 @@ module.exports.getUserLast2SavedPOI=  function (username) {
             });
         });
 };
+module.exports.updateUserCategories =  function (username, newCategories) {
+    var deletePromise = new Promise((resolve, reject) => {
+        let query = `DELETE FROM UsersCategories where username='${username}'`;
+        azureControler.runQuery(query, function(err, rows){
+            if(err){
+                reject(err);
+            }else if(rows){
+                resolve("success");
+            }else{
+                reject("Not Found");
+            }
+        });
+    });
+    return deletePromise
+        .then((data)=>{
+            let query = `INSERT INTO UsersCategories VALUES`;
+            newCategories.forEach((categoryName)=>{
+                console.log(categoryName['categoryName']);
+                console.log(username);
+                query+=`('${username}','${categoryName['categoryName']}'),`
+            });
+            query = query.substring(0, query.length-1);
+            console.log(query);
+            return new Promise((resolve, reject) => {
+                azureControler.runQuery(query, function(err, rows){
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    } else if (rows) {
+                        resolve(rows);
+                    } else {
+                        reject("Not Found");
+                    }
+                });
+            });
+        })
+        .catch((err)=>{
+            console.log(err);
+            return new Promise((resolve,reject)=>{
+                reject("Something Went Wrong")
+            });
+        });
+};
