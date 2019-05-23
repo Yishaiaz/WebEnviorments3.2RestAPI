@@ -98,7 +98,9 @@ app.post("/users/addUser", (req, res)=>{
     var securityAns2= req.body['A2'];
     var categories=req.body['categories'];
 
-    if(categories.length<2 || username.length<3 || username.length>8 || password.length<5 || password.length>10)
+    if(!(username && password && firstName && lastName && city && country && email && securityAns1 && securityQuestion1 && securityQuestion2 && securityAns2 && categories))
+        res.status(400).send("register failed. illegal input");
+    else if(categories.length<2 || username.length<3 || username.length>8 || password.length<5 || password.length>10)
         res.status(400).send("register failed. you need at least 2 categories, userName length between 3-8 and password between 5-10");
     else{
         userModule.addUser(username,password,firstName,lastName,city,country,email,securityQuestion1,securityAns1, securityQuestion2,securityAns2)
@@ -264,7 +266,8 @@ app.get("/poi/getsearchresultsbypoiname/:name", (req, res)=>{
 // todo: change documentation for this function
 // todo: change username parameter from body to token
 app.put("/private/users/setuserfavouritepoi", (req, res)=>{
-    var newPoiOrder= req.body['POI'];
+    var newPoiOrder= req.body;
+    // var newPoiOrder= req.body['POI'];
     var username= req.decoded['username'];
     console.log(newPoiOrder);
     userModule.setUserFavouritePOIOrder(username, newPoiOrder)
@@ -298,8 +301,7 @@ app.get("/private/users/getuserfavouritepoi", (req, res)=>{
 });
 
 // 19: ADD USER FAVOURITE POI
-// todo: change documentation to not receive liked date data.
-app.put("/private/users/adduserfavouritepoi", (req, res)=>{
+app.post("/private/users/adduserfavouritepoi", (req, res)=>{
     var newFavouritePoi= req.body['POIName'];
     var username = req.decoded['username'];
     console.log(newFavouritePoi);
