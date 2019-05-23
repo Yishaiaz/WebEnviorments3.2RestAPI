@@ -112,8 +112,9 @@ app.post("/users/addUser", (req, res)=>{
                 res.status(200).send(token)
             })
             .catch((err)=>{
+                userModule.deleteUser(username);
                 console.log(err);
-                res.status(400).send("Not Found");
+                res.status(400).send("register failed");
             });
     }
 });

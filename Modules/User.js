@@ -366,3 +366,18 @@ module.exports.addReview =  function(poiName,content,rating,username){
         });
     });
 };
+
+module.exports.deleteUser = function (username) {
+    return new Promise((resolve, reject) => {
+        let query = `DELETE FROM Users where username='${username}'`;
+        azureControler.runQuery(query, function(err, rows){
+            if(err){
+                reject(err);
+            }else if(rows){
+                resolve("success");
+            }else{
+                reject("Not Found");
+            }
+        });
+    });
+};
